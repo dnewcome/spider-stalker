@@ -1,0 +1,110 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_o6xl0"]
+[ext_resource type="Texture2D" path="res://assets/img/bedroom_bg.png" id="2_tipki"]
+[ext_resource type="PackedScene" path="res://scenes/spider.tscn" id="3_85g3d"]
+[ext_resource type="Script" path="res://scripts/spider_controller.gd" id="4_choun"]
+[ext_resource type="PackedScene" path="res://scenes/swat_hand.tscn" id="5_ya4ey"]
+[ext_resource type="Script" path="res://scripts/swat_hand.gd" id="6_eb6dy"]
+[ext_resource type="Script" path="res://scripts/disturbance_meter.gd" id="7_trceg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a8y0u"]
+size = Vector2(150, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jkv2x"]
+size = Vector2(300, 60)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jbj1t"]
+size = Vector2(400, 40)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_o6xl0")
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -10
+position = Vector2(640, 360)
+scale = Vector2(0.465116, 0.46875)
+texture = ExtResource("2_tipki")
+
+[node name="BedArea" type="Node2D" parent="."]
+y_sort_enabled = true
+position = Vector2(500, 380)
+
+[node name="BedSprite" type="Node2D" parent="BedArea"]
+
+[node name="FaceZone" type="Area2D" parent="BedArea"]
+position = Vector2(0, -130)
+collision_layer = 2
+collision_mask = 0
+
+[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="BedArea/FaceZone"]
+shape = SubResource("RectangleShape2D_a8y0u")
+
+[node name="HandsZone" type="Area2D" parent="BedArea"]
+position = Vector2(0, -50)
+collision_layer = 2
+collision_mask = 0
+
+[node name="@CollisionShape2D@3" type="CollisionShape2D" parent="BedArea/HandsZone"]
+shape = SubResource("RectangleShape2D_jkv2x")
+
+[node name="GoalZone" type="Area2D" parent="BedArea"]
+position = Vector2(0, -80)
+collision_layer = 2
+collision_mask = 0
+
+[node name="@CollisionShape2D@4" type="CollisionShape2D" parent="BedArea/GoalZone"]
+shape = SubResource("RectangleShape2D_jbj1t")
+
+[node name="Spider" type="CharacterBody2D" parent="." instance=ExtResource("3_85g3d")]
+position = Vector2(460, 420)
+collision_mask = 0
+motion_mode = 1
+script = ExtResource("4_choun")
+
+[node name="SwatHand" type="Node2D" parent="." instance=ExtResource("5_ya4ey")]
+visible = false
+position = Vector2(490, 300)
+script = ExtResource("6_eb6dy")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="HUDRoot" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="MeterPanel" type="PanelContainer" parent="HUD/HUDRoot"]
+custom_minimum_size = Vector2(220, 55)
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 10.0
+offset_bottom = 10.0
+
+[node name="MeterVBox" type="VBoxContainer" parent="HUD/HUDRoot/MeterPanel"]
+layout_mode = 2
+
+[node name="ZZZLabel" type="Label" parent="HUD/HUDRoot/MeterPanel/MeterVBox"]
+layout_mode = 2
+text = "ZZZ Disturbance"
+
+[node name="MeterBar" type="ProgressBar" parent="HUD/HUDRoot/MeterPanel/MeterVBox"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+value = 15.0
+
+[node name="ScoreLabel" type="Label" parent="HUD/HUDRoot"]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 40.0
+text = "Score: 0"
+
+[node name="DisturbanceMeter" type="Node" parent="HUD"]
+script = ExtResource("7_trceg")
